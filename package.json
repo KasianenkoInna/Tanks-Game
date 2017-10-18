@@ -1,0 +1,22 @@
+{
+  "name": "tanks",
+  "version": "0.0.1",
+  "description": "tank-game",
+  "main": "tanks.js",
+  "scripts": {
+    "test": "run-tests"
+  },
+  "author": "IK <kasianenkoinnavladimirovna@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
+    "gulp-babel": "^7.0.0",
+    "gulp-browserify": "^0.5.1",
+    "js-unit-test": "0.0.6",
+    "webpack": "^3.7.1"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1"
+  }
+}
