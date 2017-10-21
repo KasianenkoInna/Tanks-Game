@@ -12,8 +12,8 @@ module['exports'] = class TankFactory
      *
      * @returns {Tank}
      */
-    create(img, x, y, speed)
+    create(tankImg, woundedImg, x, y, tankSpeed, lifesCount)
     {
-        return new Tank(img, x, y, speed);
+        return new Tank(tankImg, woundedImg, x, y, tankSpeed, lifesCount);
     }
 };

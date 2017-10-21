@@ -110,8 +110,8 @@
 
     let tankFactory = new TankFactory();
     let tankArmyFactory = new TankArmyFactory();
-    let playerTank = tankFactory.create('tank.png', 0, 500, 5);
-    let enemyArmy = tankArmyFactory.create('tank.png', 5, 15);
+    let playerTank = tankFactory.create('tank.png', 'tank_fire.png', 0, 500, 5, 1);
+    let enemyArmy = tankArmyFactory.create('tank.png', 'tank_fire.png', 5, 15, 1);
     let canvas = document.getElementsByTagName('canvas');
     let game = new Game(playerTank, enemyArmy, canvas);
 

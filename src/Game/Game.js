@@ -97,15 +97,24 @@ module['exports'] = class Game
 
     /**
     * @param {Tank} tank
-    * @param {FireBall} fireBall
-    *
-    * @returns {boolean}
     */
-    _onTankKilled(tank, fireBall)
+    _onTankKilled(tank)
     {
-        this._enemyArmy.removeTank(tank);
-        this._removeFireball(fireBall);
-        this._triggerStateCanged();
+
+    }
+
+    /**
+    * @param {Tank} tank
+    */
+    _onTankHited(tank){
+        if(tank.isKilled()) {
+            this._enemyArmy.removeTank(tank);
+
+            return;
+        }
+
+        tank.lifesCountTank();
+        tank.woundedTank();
     }
 
     /**
@@ -113,12 +122,15 @@ module['exports'] = class Game
     */
     _onFireBallMoved(fireBall)
     {
-        this._triggerStateCanged();
         for (let tank of this._enemyArmy.getTanks()) {
             if (this._doesFireBallHitTank(tank, fireBall)) {
-                this._onTankKilled(tank, fireBall);
+                fireBall.stop();
+                this._onTankHited(tank);
+                this._removeFireball(fireBall);
             }
         }
+
+        this._triggerStateCanged();
     }
 
     /**
@@ -159,6 +171,10 @@ module['exports'] = class Game
             fireBall.moveUp();
             self._onFireBallMoved(fireBall);
             if (fireBall.getY() <= 0) {
+                fireBall.stop();
+            }
+
+            if (true === fireBall.isStopped()) {
                 self._removeFireball(fireBall);
                 return;
             }

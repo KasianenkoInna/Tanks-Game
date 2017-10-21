@@ -2,12 +2,14 @@
 
 module['exports'] = class Tank
 {
-    constructor(img, x, y, speed)
+    constructor(img, woundedImg, x, y, speed, lifesCount)
     {
         this._img = img;
         this._x = x;
         this._y = y;
         this._speed = speed;
+        this._lifesCount = lifesCount;
+        this._woundedImg = woundedImg;
     }
 
     getImg()
@@ -28,6 +30,19 @@ module['exports'] = class Tank
     getSpeed()
     {
         return this._speed;
+    }
+
+    lifesCountTank(){
+        this._lifesCount -= 1;
+    }
+
+    isKilled()
+    {
+        return this._lifesCount <= 0;
+    }
+
+    woundedTank(){
+        this._img = this._woundedImg;
     }
 
     moveRight()

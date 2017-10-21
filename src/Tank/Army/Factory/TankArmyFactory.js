@@ -14,16 +14,16 @@ module['exports'] = class TankArmyFactory
     * @param {String} tankImg
     * @param {Number} tankSpeed
     * @param {Number} tanksQuantity
-    *
+    * @param {Number} lifesCount
     * @returns {TankArmy}
     */
-    create(tankImg, tankSpeed, tanksQuantity)
+    create(tankImg, woundedImg, tankSpeed, tanksQuantity, lifesCount)
     {
         let army = new TankArmy();
         for(let i = 0; i < tanksQuantity; i++){
             let x = (i % 5) * 100;
             let y = Math.floor(i / 5) * 100;
-            army.add(this._tankFactory.create(tankImg, x, y, tankSpeed));
+            army.add(this._tankFactory.create(tankImg, woundedImg, x, y, tankSpeed, lifesCount));
         }
 
         return army;

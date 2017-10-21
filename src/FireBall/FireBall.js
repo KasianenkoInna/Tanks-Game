@@ -9,6 +9,7 @@ module['exports'] = class FireBall
         this._radius = radius;
         this._color = color;
         this._speed = speed;
+        this._isStopped = false;
     }
 
     getX()
@@ -39,5 +40,18 @@ module['exports'] = class FireBall
     moveUp()
     {
         this._y -= this._speed;
+    }
+
+    /**
+    * @returns {boolean}
+    */
+    isStopped()
+    {
+        return true === this._isStopped;
+    }
+
+    stop()
+    {
+        this._isStopped = true;
     }
 };
