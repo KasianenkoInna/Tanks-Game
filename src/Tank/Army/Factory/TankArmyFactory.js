@@ -12,6 +12,7 @@ module['exports'] = class TankArmyFactory
 
     /**
     * @param {String} tankImg
+    * @param {String} woundedImg
     * @param {Number} tankSpeed
     * @param {Number} tanksQuantity
     * @param {Number} lifesCount

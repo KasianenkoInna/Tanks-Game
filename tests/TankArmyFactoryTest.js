@@ -8,19 +8,19 @@ module['exports'] = class TankArmyFactoryTest extends AbstractTestCase
     testFactory()
     {
         let tankArmyFactory = new TankArmyFactory();
-        let img = 'test.jpg';
+        let tankImg = 'test.jpg';
+        let woundedImg = 'test.jpg';
         let speed = 5;
         let armySize = 50;
+        let lifesCount = 1;
 
-        let tankArmy = tankArmyFactory.create(img, speed, armySize);
+        let tankArmy = tankArmyFactory.create(tankImg, woundedImg, speed, armySize, lifesCount);
         this.assertIsObject(tankArmy);
-        this.assertEquals(50, tankArmy.getSize());
-
-        let armyTanks = tankArmy.getTanks();
-        for (let i = 0; i < armyTanks.length; i++) {
-          let tank = armyTanks[i];
-          this.assertEquals(img, tank.getImg());
-          this.assertEquals(speed, tank.getSpeed());
+        this.assertEquals(armySize, tankArmy.getSize());
+        this.assertCount(armySize, tankArmy.getTanks());
+        for(let tank of tankArmy.getTanks()) {
+            this.assertIsObject(tank);
+            this.assertEquals(tankImg, tank.getImg());
         }
     }
 };

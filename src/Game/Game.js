@@ -26,11 +26,11 @@ module['exports'] = class Game
         }
         this._canvas = canvas;
         this._fireBallFactory = new FireBallFactory();
-        this._fireBalls = [];
+        this._fireBalls = new Set();
         this._playerTank = playerTank;
         this._enemyArmy = enemyArmy;
 
-        this._observers = [];
+        this._observers = new Set();
     }
 
     getPlayerTank()
@@ -48,7 +48,7 @@ module['exports'] = class Game
     */
     getFireBalls()
     {
-        return this._fireBalls;
+        return this._fireBalls.values();
     }
 
     // ****************************** //
@@ -98,14 +98,6 @@ module['exports'] = class Game
     /**
     * @param {Tank} tank
     */
-    _onTankKilled(tank)
-    {
-
-    }
-
-    /**
-    * @param {Tank} tank
-    */
     _onTankHited(tank){
         if(tank.isKilled()) {
             this._enemyArmy.removeTank(tank);
@@ -113,8 +105,7 @@ module['exports'] = class Game
             return;
         }
 
-        tank.lifesCountTank();
-        tank.woundedTank();
+        tank.hit();
     }
 
     /**
@@ -140,14 +131,7 @@ module['exports'] = class Game
     */
     _removeFireball(fireBall)
     {
-        let index = this._fireBalls.indexOf(fireBall);
-        if (index < 0) {
-          return false;
-        }
-
-        this._fireBalls.splice(index, 1);
-
-        return true;
+        return this._fireBalls.delete(fireBall);
     }
 
     // ****************************** //
@@ -164,7 +148,7 @@ module['exports'] = class Game
             5
         );
 
-        this._fireBalls.push(fireBall);
+        this._fireBalls.add(fireBall);
         let self = this;
 
         let fireBallWalk = function() {
@@ -219,12 +203,7 @@ module['exports'] = class Game
           throw new Error('observer must be instanceof AbstractGameObserver');
         }
 
-        let index = this._observers.indexOf(observer);
-        if (index >= 0) {
-          return false;
-        }
-
-        this._observers.push(observer);
+        this._observers.add(observer);
         this._triggerStateCanged();
 
         return true;
@@ -241,13 +220,6 @@ module['exports'] = class Game
           throw new Error('observer must be instanceof AbstractGameObserver');
         }
 
-        let index = this._observers.indexOf(observer);
-        if (index < 0) {
-          return false;
-        }
-
-        this._observers.splice(index, 1);
-
-        return true;
+        return this._observers.delete(observer);
     }
 };

@@ -13,23 +13,21 @@ module['exports'] = class TankArmyTest extends AbstractTestCase
         let tank2 = tankFactory.create('test.jpg', 2, 2, 5);
         let tankArmy = new TankArmy();
 
-        this.assertEquals(true, tankArmy.add(tank1));
-        this.assertEquals(false, tankArmy.add(tank1));
-        this.assertEquals(true, tankArmy.add(tank2));
-        this.assertEquals(false, tankArmy.add(tank2));
+        tankArmy.add(tank1);
+        tankArmy.add(tank2)
 
-        let tanks = tankArmy.getTanks();
+        this.assertIsObject(tankArmy.getTanks());
+        this.assertCount(2, tankArmy.getTanks());
+        this.assertEquals(2, tankArmy.getSize());
 
-        this.assertIsObject(tanks);
-        this.assertEquals(true, tanks instanceof Array);
-
-        this.assertEquals(2, tanks.length);
         this.assertEquals(true, tankArmy.removeTank(tank1));
         this.assertEquals(false, tankArmy.removeTank(tank1));
-        this.assertEquals(1, tankArmy.getTanks().length);
+        this.assertEquals(1, tankArmy.getSize());
+        this.assertCount(1, tankArmy.getTanks());
 
         this.assertEquals(true, tankArmy.removeTank(tank2));
         this.assertEquals(false, tankArmy.removeTank(tank2));
-        this.assertEquals(0, tankArmy.getTanks().length);
+        this.assertEquals(0, tankArmy.getSize());
+        this.assertCount(0, tankArmy.getTanks());
     }
 };
