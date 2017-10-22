@@ -13,7 +13,7 @@
     "babelify": "^7.3.0",
     "gulp-babel": "^7.0.0",
     "gulp-browserify": "^0.5.1",
-    "js-unit-test": "0.0.6",
+    "js-unit-test": "0.*",
     "webpack": "^3.7.1"
   },
   "dependencies": {
