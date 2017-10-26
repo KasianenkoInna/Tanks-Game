@@ -9,13 +9,16 @@ const AbstractGameObserver = require('./Observer/AbstractGameObserver');
 const TANK_HARDCODE_WIDTH = 41;
 const TANK_HARDCODE_HEIGHT = 52;
 
+const GAME_FIELD_WIDTH = 900;
+const GAME_FIELD_HEIGHT = 600;
+
 module['exports'] = class Game
 {
     /**
     * @param {Tank} playerTank
     * @param {TankArmy} enemyArmy
     */
-    constructor(playerTank, enemyArmy, canvas)
+    constructor(playerTank, enemyArmy)
     {
         if (false === playerTank instanceof Tank) {
             throw new Error('playerTank must be instanceof Tank');
@@ -24,13 +27,28 @@ module['exports'] = class Game
         if (false === enemyArmy instanceof TankArmy) {
             throw new Error('enemyArmy must be instanceof TankArmy');
         }
-        this._canvas = canvas;
+
         this._fireBallFactory = new FireBallFactory();
         this._fireBalls = new Set();
         this._playerTank = playerTank;
         this._enemyArmy = enemyArmy;
-
         this._observers = new Set();
+    }
+
+    /**
+    * @param {Number}
+    */
+    getWidth()
+    {
+        return GAME_FIELD_WIDTH;
+    }
+
+    /**
+    * @param {Number}
+    */
+    getHeight()
+    {
+        return GAME_FIELD_HEIGHT;
     }
 
     getPlayerTank()
@@ -55,16 +73,30 @@ module['exports'] = class Game
     // Game Logic                     //
     // ****************************** //
 
-    _moveEnemyArmy()
-    {
-        for(let tank in this.getEnemyArmy()){
-            if(this.getEnemyArmy()[tank].getX()+10 >= this._canvas.width)
-            this.getEnemyArmy()[tank].moveLeft();
-            if(this.getEnemyArmy()[tank].getX() < 10)
-            this.getEnemyArmy()[tank].moveRight();
-        }
-    }
+    start() {
+        let directions = [
+            this._enemyArmy.moveRight.bind(this._enemyArmy),
+            this._enemyArmy.moveLeft.bind(this._enemyArmy)
+        ];
+        let self = this;
 
+        let moveEnemyArmy = function() {
+            if (self._enemyArmy.getMinX() < 0 || self._enemyArmy.getMaxX() > GAME_FIELD_WIDTH) {
+                directions.reverse();
+            }
+
+            if (self._enemyArmy.getSize() <= 0) {
+                return;
+            }
+
+            directions[0]();
+            self._triggerStateCanged('updateEnemyArmy');
+
+            setTimeout(moveEnemyArmy, 500);
+        };
+
+        moveEnemyArmy();
+    };
 
     /**
     * @returns {boolean}
@@ -101,11 +133,13 @@ module['exports'] = class Game
     _onTankHited(tank){
         if(tank.isKilled()) {
             this._enemyArmy.removeTank(tank);
+            this._triggerStateCanged('deletTank');
 
             return;
         }
 
         tank.hit();
+        this._triggerStateCanged('updateEnemyArmy');
     }
 
     /**
@@ -118,10 +152,11 @@ module['exports'] = class Game
                 fireBall.stop();
                 this._onTankHited(tank);
                 this._removeFireball(fireBall);
+
             }
         }
 
-        this._triggerStateCanged();
+        this._triggerStateCanged('updateFifeBall');
     }
 
     /**
@@ -160,10 +195,11 @@ module['exports'] = class Game
 
             if (true === fireBall.isStopped()) {
                 self._removeFireball(fireBall);
+                self._triggerStateCanged('updateFifeBall');
                 return;
             }
 
-            setTimeout(fireBallWalk, 200);
+            setTimeout(fireBallWalk, 100);
         };
 
         fireBallWalk();
@@ -172,23 +208,23 @@ module['exports'] = class Game
     movePlayerTankToRight()
     {
         this._playerTank.moveRight();
-        this._triggerStateCanged();
+        this._triggerStateCanged('updatePlayerTank');
     }
 
     movePlayerTankToLeft()
     {
         this._playerTank.moveLeft();
-        this._triggerStateCanged();
+        this._triggerStateCanged('updatePlayerTank');
     }
 
     // ****************************** //
     // Observer Logic                 //
     // ****************************** //
 
-    _triggerStateCanged()
+    _triggerStateCanged(changes)
     {
         for(let o of this._observers) {
-          o.notifyGameStateChanged(this);
+          o.notifyGameStateChanged(this, changes);
         }
     }
 
@@ -204,7 +240,7 @@ module['exports'] = class Game
         }
 
         this._observers.add(observer);
-        this._triggerStateCanged();
+        this._triggerStateCanged('updateAll');
 
         return true;
     }

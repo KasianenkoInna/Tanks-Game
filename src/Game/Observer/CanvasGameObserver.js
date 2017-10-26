@@ -22,9 +22,20 @@ module['exports'] = class CanvasGameObserver extends AbstractGameObserver
         return this._canvas.getContext('2d');
     }
 
-    _clearCanvas()
+    /**
+    * @param {Number} x
+    * @param {Number} y
+    * @param {Number} width
+    * @param {Number} height
+    */
+    _clearCanvasSector(x, y, width, height)
     {
-        this._getContext2D().clearRect(0, 0, this._canvas.width, this._canvas.height);
+        this._getContext2D().clearRect(x, y, width, height);
+    }
+
+    _clearWholeCanvas()
+    {
+        this._clearCanvasSector(0, 0, this._canvas.width, this._canvas.height);
     }
 
     /**
@@ -53,22 +64,51 @@ module['exports'] = class CanvasGameObserver extends AbstractGameObserver
 
     /**
     * @param {Game} game
+    * @param {String} model
     * @protected
     */
-    update(game)
+    update(game, model)
     {
         if (false === game instanceof Game) {
           throw new Error('game must be instanceof Game');
         }
 
-        this._clearCanvas();
-        this._drawTank(game.getPlayerTank());
-        for(let tank of game.getEnemyArmy().getTanks()) {
-            this._drawTank(tank);
+        switch(model) {
+            case 'deletTank':
+                this._clearCanvasSector(0, 0, this._canvas.width, this._canvas.height/2);
+                for(let tank of game.getEnemyArmy().getTanks()) {
+                    this._drawTank(tank);
+                }
+                return;
+            case 'updateAll':
+                this._clearWholeCanvas();
+                this._drawTank(game.getPlayerTank());
+                for(let tank of game.getEnemyArmy().getTanks()) {
+                    this._drawTank(tank);
+                }
+
+                return;
+            case 'updatePlayerTank':
+                let tank = game.getPlayerTank();
+                this._clearCanvasSector(tank.getSaveX(), tank.getSaveY(), 50, 60);
+                this._drawTank(tank);
+                return;
+            case 'updateEnemyArmy':
+                for(let tank of game.getEnemyArmy().getTanks()) {
+                    this._clearCanvasSector(tank.getSaveX(), tank.getSaveY(), 50, 60);
+                    this._drawTank(tank);
+                }
+                return;
+            case 'updateFifeBall':
+                for(let ball of game.getFireBalls()) {
+                    this._clearCanvasSector(ball.getX() - ball.getRadius(), ball.getY() + ball.getSpeed(), ball.getRadius()*2, ball.getRadius()*2);
+                    this._drawFireBall(ball);
+                }
+                return;
+            default:
+                break;
         }
 
-        for(let ball of game.getFireBalls()) {
-            this._drawFireBall(ball);
-        }
+        throw new Error(`Mode ${model} not supported`);
     }
 };

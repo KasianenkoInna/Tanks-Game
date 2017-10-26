@@ -71,6 +71,7 @@
                     default:
                         break;
                 }
+                //requestAnimationFrame(window.onkeydown);
             };
 
             window.onkeyup = function() {
@@ -80,31 +81,20 @@
 
         /**
         * @param {String} canvasHtmlId
-        * @param {Number} width
-        * @param {Number} height
         */
-        init(canvasHtmlId, width, height)
+        init(canvasHtmlId)
         {
             if (false === ('string' === typeof canvasHtmlId)) {
                 console.warn('Provide  {String} <html #Id> for tank game Screen');
                 return;
             }
 
-            if (false === ('number' === typeof width)) {
-                console.warn('Provide  {Number} width for tank game Screen');
-                return;
-            }
-
-            if (false === ('number' === typeof height)) {
-                console.warn('Provide  {Number} height for tank game Screen');
-                return;
-            }
-
-            let canvas = this._createCanvas(canvasHtmlId, parseInt(width), parseInt(height));
+            let canvas = this._createCanvas(canvasHtmlId, this._game.getWidth(), this._game.getHeight());
             document.getElementsByTagName('head')[0].appendChild(this._createStyle(canvasHtmlId));
             document.body.appendChild(canvas);
             this._game.attachObserver(new CanvasGameObserver(canvas));
             this._attachEventHandlers();
+            this._game.start();
         };
     }
 
@@ -112,9 +102,9 @@
     let tankArmyFactory = new TankArmyFactory();
     let playerTank = tankFactory.create('tank.png', 'tank_fire.png', 0, 500, 5, 1);
     let enemyArmy = tankArmyFactory.create('tank.png', 'tank_fire.png', 5, 15, 1);
-    let canvas = document.getElementsByTagName('canvas');
-    let game = new Game(playerTank, enemyArmy, canvas);
+    let game = new Game(playerTank, enemyArmy);
 
     global.tanksGame = new TanksGame(game, '0.0.1');
+
 
 })(window);

@@ -6,7 +6,7 @@ module['exports'] = class AbstractGameObserver
     * @param {Game} game
     * @protected
     */
-    update(game)
+    update(game, changes)
     {
         throw new Error('Not implemented!');
     }
@@ -14,8 +14,8 @@ module['exports'] = class AbstractGameObserver
     /**
     * @param {Game} game
     */
-    notifyGameStateChanged(game)
+    notifyGameStateChanged(game, changes)
     {
-        this.update(game);
+        this.update(game, changes);
     }
 };

@@ -10,6 +10,8 @@ module['exports'] = class Tank
         this._y = y;
         this._speed = speed;
         this._lifesCount = lifesCount;
+        this._saveX = x;
+        this._saveY = y;
     }
 
     getImg()
@@ -25,6 +27,16 @@ module['exports'] = class Tank
     getY()
     {
         return this._y;
+    }
+
+    getSaveX()
+    {
+        return this._saveX;
+    }
+
+    getSaveY()
+    {
+        return this._saveY;
     }
 
     getSpeed()
@@ -45,11 +57,13 @@ module['exports'] = class Tank
 
     moveRight()
     {
+        this._saveX = this._x;
         this._x += this._speed;
     }
 
     moveLeft()
     {
+        this._saveX = this._x;
         this._x -= this._speed;
     }
 };
